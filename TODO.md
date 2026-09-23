@@ -1,8 +1,8 @@
 # SpendLens Proof Progress
 
-**Current phase:** Release
-**Next milestone:** Publish the verified repository
-**Overall status:** Release candidate
+**Current phase:** Complete
+**Next milestone:** None — proof shipped
+**Overall status:** Complete
 
 ## Milestones
 
@@ -16,7 +16,7 @@
 - [x] Persist data locally and support reset/demo recovery.
 - [x] Complete responsive and accessibility verification.
 - [x] Run unit, integration, browser, and production-build gates.
-- [ ] Dogfood a realistic multi-month statement and publish to GitHub.
+- [x] Dogfood a realistic multi-month statement and publish to GitHub.
 
 ## Product proof
 
