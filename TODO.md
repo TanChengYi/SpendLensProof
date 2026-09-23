@@ -1,8 +1,8 @@
 # SpendLens Proof Progress
 
-**Current phase:** Product foundation
-**Next milestone:** Deterministic finance engine
-**Overall status:** In progress
+**Current phase:** Release
+**Next milestone:** Publish the verified repository
+**Overall status:** Release candidate
 
 ## Milestones
 
@@ -10,12 +10,12 @@
 - [x] Define the differentiated product promise.
 - [x] Create the standalone repository.
 - [x] Write the product specification and implementation plan.
-- [ ] Build and test CSV normalization, categorization, duplicate detection, recurring detection, and anomaly detection.
-- [ ] Build the import review and confidence workflow.
-- [ ] Build the monthly lens, insight feed, and transaction explorer.
-- [ ] Persist data locally and support reset/demo recovery.
-- [ ] Complete responsive and accessibility verification.
-- [ ] Run unit, integration, browser, and production-build gates.
+- [x] Build and test CSV normalization, categorization, duplicate detection, recurring detection, and anomaly detection.
+- [x] Build the import review and confidence workflow.
+- [x] Build the monthly lens, insight feed, and transaction explorer.
+- [x] Persist data locally and support reset/demo recovery.
+- [x] Complete responsive and accessibility verification.
+- [x] Run unit, integration, browser, and production-build gates.
 - [ ] Dogfood a realistic multi-month statement and publish to GitHub.
 
 ## Product proof

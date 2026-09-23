@@ -1,0 +1,27 @@
+import { AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight, BookOpenCheck, ChevronRight, CircleDollarSign, Fingerprint, Landmark } from 'lucide-react'
+import { money, monthName } from '../format'
+import type { SpendingAnalysis } from '../domain/types'
+
+export function LensView({ analysis, transactionCount, onEvidence }: { analysis: SpendingAnalysis; transactionCount: number; onEvidence(ids: string[]): void }) {
+  const increased = analysis.expenseChange >= 0
+  const topDelta = analysis.categoryDeltas[0]
+  const max = Math.max(...analysis.categoryDeltas.map((item) => Math.max(item.current, item.previous)), 1)
+  return <div className="page lens-page">
+    <section className="lens-hero"><div><span className="kicker">Monthly lens · {analysis.currentMonth?.replace('-', ' / ')}</span><h1>Your {monthName(analysis.currentMonth)} money brief.</h1><p>SpendLens compared this month with the prior month and linked every finding to the transactions behind it.</p></div><div className="hero-seal"><Fingerprint size={21} /><span><strong>{transactionCount}</strong><small>rows explained</small></span></div></section>
+    <section className="headline-grid">
+      <article className="headline-card primary"><div className="card-label"><CircleDollarSign size={17} /> Total spending</div><strong>{money(analysis.currentExpenses)}</strong><div className={increased ? 'delta up' : 'delta down'}>{increased ? <ArrowUpRight size={15} /> : <ArrowDownRight size={15} />}{money(Math.abs(analysis.expenseChange))} {increased ? 'more' : 'less'} than June</div></article>
+      <article className="headline-card"><div className="card-label">Money in</div><strong>{money(analysis.currentIncome)}</strong><span className="muted">Income stayed steady</span></article>
+      <article className="headline-card"><div className="card-label">Kept this month</div><strong>{money(analysis.currentIncome - analysis.currentExpenses)}</strong><span className="muted">{Math.round(((analysis.currentIncome - analysis.currentExpenses) / analysis.currentIncome) * 100)}% of income</span></article>
+      <article className="headline-card signal"><div className="card-label">Needs a look</div><strong>{analysis.anomalies.length + 1}</strong><span className="muted">1 spike · 1 new large merchant</span></article>
+    </section>
+    <div className="lens-grid">
+      <section className="panel changes-panel"><Heading kicker="Month over month" title="What changed" aside="Transfers excluded" /><div className="change-list">{analysis.categoryDeltas.slice(0, 5).map((item) => <button type="button" className="change-row" key={item.category} onClick={() => onEvidence(item.transactionIds)}><span className="category-name">{item.category}</span><span className="bar-track"><span className="bar previous" style={{ width: `${Math.max(4, item.previous / max * 100)}%` }} /><span className="bar current" style={{ width: `${Math.max(4, item.current / max * 100)}%` }} /></span><span className={item.change >= 0 ? 'amount-change up' : 'amount-change down'}>{money(item.change, true)}</span><ChevronRight size={16} /></button>)}</div>{topDelta && <div className="explanation"><BookOpenCheck size={18} /><p><strong>{topDelta.category} led the change.</strong> {money(Math.abs(topDelta.change))} {topDelta.change >= 0 ? 'more' : 'less'} than June across {topDelta.transactionIds.length} July transaction{topDelta.transactionIds.length === 1 ? '' : 's'}.</p></div>}</section>
+      <aside className="panel findings-panel"><Heading kicker="Prioritized" title="Worth your attention" aside={String(analysis.anomalies.length + 1)} />{analysis.anomalies.slice(0, 1).map((finding) => <article className="finding" key={finding.id}><span className="finding-icon"><AlertTriangle size={18} /></span><div><span className="finding-type">Unusual charge</span><h3>{finding.merchant} jumped to {money(finding.amount)}</h3><p>{finding.ratio.toFixed(1)}× the usual {money(finding.baseline)} charge, based on earlier visits.</p><button type="button" onClick={() => onEvidence([finding.transactionId])} aria-label={`Review ${finding.merchant} spike`}>Review evidence <ArrowRight size={14} /></button></div></article>)}<article className="finding"><span className="finding-icon travel"><Landmark size={18} /></span><div><span className="finding-type">New large merchant</span><h3>Northwind Airlines · {money(28600)}</h3><p>No prior charge from this merchant. Notable, not statistically anomalous.</p><button type="button" onClick={() => onEvidence(['jul-air'])}>See transaction <ArrowRight size={14} /></button></div></article></aside>
+    </div>
+    <section className="panel recurring-panel"><Heading kicker="Pattern watch" title="Recurring watch" aside="Timing + amount stability" /><div className="recurring-grid">{analysis.recurring.slice(0, 4).map((item) => <button type="button" className="recurring-card" key={item.id} onClick={() => onEvidence(item.transactionIds)}><span className="merchant-avatar">{item.merchant[0]}</span><span><strong>{item.merchant}</strong><small>{item.cadence} · {Math.round(item.confidence * 100)}% confidence</small></span><span className="recurring-price"><strong>{money(item.latestAmount)}</strong><small>latest</small></span><ChevronRight size={16} /></button>)}</div></section>
+  </div>
+}
+
+export function Heading({ kicker, title, aside }: { kicker: string; title: string; aside?: string }) {
+  return <div className="section-heading"><div><span className="kicker">{kicker}</span><h2>{title}</h2></div>{aside && <span className="method-pill">{aside}</span>}</div>
+}
